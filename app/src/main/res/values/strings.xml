@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Transactional SMS Analyzer</string>
+    <string name="this_is_a_sample_text">This is a sample text.</string>
 </resources>
