@@ -1,6 +1,8 @@
 package dev.ujjwal.transactionalsmsanalyzer.view.activity
 
 import android.Manifest
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
@@ -8,7 +10,10 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +30,8 @@ import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var sharedPreferences: SharedPreferences
+
     companion object {
         private val TAG = MainActivity::class.java.simpleName
         private const val MY_PERMISSIONS_REQUEST_READ_SMS = 1
@@ -35,6 +42,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        sharedPreferences = this.getSharedPreferences("TagPref", Context.MODE_PRIVATE)
 
         checkPermission()
 
@@ -119,7 +128,7 @@ class MainActivity : AppCompatActivity() {
                 smsDetail.body = body
                 smsDetail.isCredited = getCreditStatus(body)
                 smsDetail.amount = getAmount(m.group(0)!!)
-                smsDetail.tag = ""
+                smsDetail.tag = sharedPreferences.getString(id, "")
                 smsList.add(smsDetail)
             }
         } while (smsInboxCursor.moveToNext())
@@ -134,5 +143,29 @@ class MainActivity : AppCompatActivity() {
             }
             smsListAdapter.updateSms(filterSmsList)
         }
+    }
+
+    fun changeSmsTag(id: String) {
+        val alertDialog: AlertDialog.Builder = AlertDialog.Builder(this)
+        alertDialog.setMessage("Change Tag Name")
+        val input = EditText(this)
+        val lp = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        input.layoutParams = lp
+        alertDialog.setView(input)
+        input.setText(sharedPreferences.getString(id, ""))
+
+        alertDialog.setPositiveButton("Save") { dialog, which ->
+            val str = input.text.toString().trim().toLowerCase()
+            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+            editor.putString(id, str)
+            editor.apply()
+            refreshSmsInbox()
+        }
+        alertDialog.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
+
+        alertDialog.show()
     }
 }
