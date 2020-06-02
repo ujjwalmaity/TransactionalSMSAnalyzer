@@ -125,7 +125,7 @@ class ChartActivity : AppCompatActivity() {
                     totalExpenses += sms.amount!!.toDouble()
             }
             if (totalExpenses <= 0) continue
-            data.add(ValueDataEntry(tag, totalExpenses))
+            data.add(ValueDataEntry(tag.toUpperCase(), totalExpenses))
             totalExpenses = 0.0
         }
 

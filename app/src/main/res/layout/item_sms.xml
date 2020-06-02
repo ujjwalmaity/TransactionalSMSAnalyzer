@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sms_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,11 +9,59 @@
     android:elevation="@dimen/cardview_default_elevation"
     app:cardCornerRadius="5dp">
 
-    <TextView
-        android:id="@+id/tv_sms"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:text="@string/this_is_a_sample_text"
-        android:textSize="18sp" />
+        android:layout_height="match_parent"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/tv_sms_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:fontFamily="sans-serif"
+            android:textColor="@android:color/holo_purple"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:text="TAG" />
+
+        <TextView
+            android:id="@+id/tv_sms_sender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textColor="@android:color/holo_orange_light"
+            android:textSize="18sp"
+            tools:text="VM-SBIDGT" />
+
+        <TextView
+            android:id="@+id/tv_sms_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_sms_tag"
+            android:fontFamily="sans-serif"
+            android:textColor="@android:color/holo_green_dark"
+            android:textSize="16sp"
+            android:textStyle="italic"
+            tools:text="+1000" />
+
+        <TextView
+            android:id="@+id/tv_sms_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_sms_amount"
+            android:fontFamily="sans-serif"
+            android:textSize="18sp"
+            tools:text="@string/this_is_a_sample_text" />
+
+        <TextView
+            android:id="@+id/tv_sms_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_sms_body"
+            android:layout_alignParentEnd="true"
+            android:fontFamily="sans-serif"
+            android:textSize="12sp"
+            tools:text="Tue Jun 02" />
+    </RelativeLayout>
 </androidx.cardview.widget.CardView>
