@@ -5,4 +5,5 @@
     <string name="monthly">MONTHLY</string>
     <string name="daily">DAILY</string>
     <string name="tag">TAG</string>
+    <string name="enter_tag_name">Enter tag name</string>
 </resources>

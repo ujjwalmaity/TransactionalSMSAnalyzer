@@ -38,11 +38,21 @@
             android:text="@string/tag" />
     </LinearLayout>
 
+    <EditText
+        android:id="@+id/et_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout"
+        android:layout_margin="5dp"
+        android:drawableStart="@drawable/ic_baseline_search"
+        android:hint="@string/enter_tag_name"
+        android:inputType="text" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/linearLayout"
+        android:layout_below="@id/et_search"
         tools:listitem="@layout/item_sms" />
 
 </RelativeLayout>

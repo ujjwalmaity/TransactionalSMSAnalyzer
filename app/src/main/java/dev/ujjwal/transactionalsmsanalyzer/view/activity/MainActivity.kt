@@ -5,6 +5,8 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dev.ujjwal.transactionalsmsanalyzer.R
 import dev.ujjwal.transactionalsmsanalyzer.model.SMSDetail
 import dev.ujjwal.transactionalsmsanalyzer.model.smsList
-import dev.ujjwal.transactionalsmsanalyzer.util.*
+import dev.ujjwal.transactionalsmsanalyzer.util.getAmount
+import dev.ujjwal.transactionalsmsanalyzer.util.getCreditStatus
+import dev.ujjwal.transactionalsmsanalyzer.util.gotoChatActivity
 import dev.ujjwal.transactionalsmsanalyzer.view.adapter.SmsListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.regex.Pattern
@@ -55,6 +59,14 @@ class MainActivity : AppCompatActivity() {
         btn_tag.setOnClickListener {
             gotoChatActivity("tag")
         }
+
+        et_search.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable) {
+                filter(s.toString().trim())
+            }
+        })
     }
 
     private fun checkPermission() {
@@ -107,9 +119,20 @@ class MainActivity : AppCompatActivity() {
                 smsDetail.body = body
                 smsDetail.isCredited = getCreditStatus(body)
                 smsDetail.amount = getAmount(m.group(0)!!)
+                smsDetail.tag = ""
                 smsList.add(smsDetail)
             }
         } while (smsInboxCursor.moveToNext())
         smsListAdapter.updateSms(smsList)
+    }
+
+    private fun filter(text: String) {
+        val filterSmsList = ArrayList<SMSDetail>()
+        for (sms in smsList) {
+            if (sms.tag!!.toLowerCase().contains(text.toLowerCase())) {
+                filterSmsList.add(sms)
+            }
+            smsListAdapter.updateSms(filterSmsList)
+        }
     }
 }
