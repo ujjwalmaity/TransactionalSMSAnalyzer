@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.ujjwal.transactionalsmsanalyzer.R
 import dev.ujjwal.transactionalsmsanalyzer.model.SMSDetail
 import kotlinx.android.synthetic.main.item_sms.view.*
-import java.util.ArrayList
+import java.util.*
 
 class SmsListAdapter(private val context: Context, private var smses: ArrayList<SMSDetail>) : RecyclerView.Adapter<SmsListAdapter.SmsListViewHolder>() {
 
@@ -34,9 +34,9 @@ class SmsListAdapter(private val context: Context, private var smses: ArrayList<
 
         fun bind(sms: SMSDetail, context: Context, position: Int) {
             if (sms.isCredited!!) {
-                tvSms.text = "TAG: ${sms.tag}\nSENDER: ${sms.sender}\nCREDITED: ${sms.amount}\nON: ${sms.beautifulDate}\n\n${sms.body}"
+                tvSms.text = "TAG: ${sms.tag}\nSENDER: ${sms.sender}\nCREDITED: ${sms.amount}\nON: ${Date(sms.date!!.toLong())}\n\n${sms.body}"
             } else {
-                tvSms.text = "TAG: ${sms.tag}\nSENDER: ${sms.sender}\nDEBITED: ${sms.amount}\nON: ${sms.beautifulDate}\n\n${sms.body}"
+                tvSms.text = "TAG: ${sms.tag}\nSENDER: ${sms.sender}\nDEBITED: ${sms.amount}\nON: ${Date(sms.date!!.toLong())}\n\n${sms.body}"
             }
         }
     }

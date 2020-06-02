@@ -1,5 +1,7 @@
 package dev.ujjwal.transactionalsmsanalyzer.model
 
+val smsList = ArrayList<SMSDetail>()
+
 data class SMSDetail(
     var _id: String? = null,
     var date: String? = null,
@@ -7,7 +9,6 @@ data class SMSDetail(
     var body: String? = null,
 
     var isCredited: Boolean? = null,
-    var beautifulDate: String? = null,
     var amount: String? = null,
     var tag: String? = null
 )

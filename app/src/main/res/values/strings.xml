@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Transactional SMS Analyzer</string>
     <string name="this_is_a_sample_text">This is a sample text.</string>
+    <string name="total">TOTAL</string>
+    <string name="monthly">MONTHLY</string>
+    <string name="daily">DAILY</string>
+    <string name="tag">TAG</string>
 </resources>

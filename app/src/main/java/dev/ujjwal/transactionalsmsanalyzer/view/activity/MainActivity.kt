@@ -12,12 +12,12 @@ import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.ujjwal.transactionalsmsanalyzer.R
 import dev.ujjwal.transactionalsmsanalyzer.model.SMSDetail
-import dev.ujjwal.transactionalsmsanalyzer.util.getAmount
-import dev.ujjwal.transactionalsmsanalyzer.util.getBeautifulDate
-import dev.ujjwal.transactionalsmsanalyzer.util.getCreditStatus
+import dev.ujjwal.transactionalsmsanalyzer.model.smsList
+import dev.ujjwal.transactionalsmsanalyzer.util.*
 import dev.ujjwal.transactionalsmsanalyzer.view.adapter.SmsListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.regex.Pattern
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         private const val MY_PERMISSIONS_REQUEST_READ_SMS = 1
     }
 
-    private val smsList = ArrayList<SMSDetail>()
     private val smsListAdapter = SmsListAdapter(this, arrayListOf())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +41,19 @@ class MainActivity : AppCompatActivity() {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED) {
             refreshSmsInbox()
+        }
+
+        btn_total.setOnClickListener {
+            gotoChatActivity("total")
+        }
+        btn_monthly.setOnClickListener {
+            gotoChatActivity("monthly")
+        }
+        btn_daily.setOnClickListener {
+            gotoChatActivity("daily")
+        }
+        btn_tag.setOnClickListener {
+            gotoChatActivity("tag")
         }
     }
 
@@ -94,7 +106,6 @@ class MainActivity : AppCompatActivity() {
                 smsDetail.sender = sender
                 smsDetail.body = body
                 smsDetail.isCredited = getCreditStatus(body)
-                smsDetail.beautifulDate = getBeautifulDate(date)
                 smsDetail.amount = getAmount(m.group(0)!!)
                 smsList.add(smsDetail)
             }
