@@ -25,7 +25,7 @@ class ChartActivity : AppCompatActivity() {
                 "total" -> setupPieChart("Total Report", calculateTotal())
                 "monthly" -> setupPieChart("Monthly Report", calculateMonthly())
                 "daily" -> setupPieChart("Daily Report", calculateDaily())
-                "tag" -> setupPieChart("Tag Report", calculateTag())
+                "tag" -> setupPieChart("Tag Wise Expenses", calculateTag())
             }
         }
     }
@@ -110,16 +110,24 @@ class ChartActivity : AppCompatActivity() {
     private fun calculateTag(): MutableList<DataEntry> {
         val data: MutableList<DataEntry> = ArrayList()
         var totalExpenses: Double = 0.0
-        var totalIncome: Double = 0.0
 
+        val allTags = ArrayList<String>()
         for (sms in smsList) {
-            if (sms.isCredited!!)
-                totalIncome += sms.amount!!.toDouble()
-            else
-                totalExpenses += sms.amount!!.toDouble()
+            allTags.add(sms.tag!!)
         }
-        data.add(ValueDataEntry("Expenses", totalExpenses))
-        data.add(ValueDataEntry("Income", totalIncome))
+        val uniqueTags = allTags.distinct()
+
+        for (tag in uniqueTags) {
+            if (tag == "") continue
+            for (sms in smsList) {
+                if (sms.tag != tag) continue
+                if (!sms.isCredited!!)
+                    totalExpenses += sms.amount!!.toDouble()
+            }
+            if (totalExpenses <= 0) continue
+            data.add(ValueDataEntry(tag, totalExpenses))
+            totalExpenses = 0.0
+        }
 
         return data
     }
