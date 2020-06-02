@@ -6,15 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import dev.ujjwal.transactionalsmsanalyzer.R
-import dev.ujjwal.transactionalsmsanalyzer.model.SMS
+import dev.ujjwal.transactionalsmsanalyzer.model.SMSDetail
 import kotlinx.android.synthetic.main.item_sms.view.*
 import java.util.ArrayList
 
-class SmsListAdapter(private val context: Context, private var sms: ArrayList<SMS>) : RecyclerView.Adapter<SmsListAdapter.SmsListViewHolder>() {
+class SmsListAdapter(private val context: Context, private var smses: ArrayList<SMSDetail>) : RecyclerView.Adapter<SmsListAdapter.SmsListViewHolder>() {
 
-    fun updateSms(sms: List<SMS>) {
-        this.sms.clear()
-        this.sms.addAll(sms)
+    fun updateSms(sms: List<SMSDetail>) {
+        this.smses.clear()
+        this.smses.addAll(sms)
         notifyDataSetChanged()
     }
 
@@ -24,16 +24,20 @@ class SmsListAdapter(private val context: Context, private var sms: ArrayList<SM
     }
 
     override fun onBindViewHolder(holder: SmsListViewHolder, position: Int) {
-        holder.bind(sms[position], context, position)
+        holder.bind(smses[position], context, position)
     }
 
-    override fun getItemCount() = sms.size
+    override fun getItemCount() = smses.size
 
     class SmsListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tvSms = view.tv_sms
 
-        fun bind(sms: SMS, context: Context, position: Int) {
-            tvSms.text = sms.smsBody
+        fun bind(sms: SMSDetail, context: Context, position: Int) {
+            if (sms.isCredited!!) {
+                tvSms.text = "TAG: ${sms.tag}\nSENDER: ${sms.sender}\nCREDITED: ${sms.amount}\nON: ${sms.beautifulDate}\n\n${sms.body}"
+            } else {
+                tvSms.text = "TAG: ${sms.tag}\nSENDER: ${sms.sender}\nDEBITED: ${sms.amount}\nON: ${sms.beautifulDate}\n\n${sms.body}"
+            }
         }
     }
 }

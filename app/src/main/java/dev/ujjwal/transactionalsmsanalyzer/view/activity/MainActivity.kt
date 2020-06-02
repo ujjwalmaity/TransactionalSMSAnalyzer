@@ -11,9 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.ujjwal.transactionalsmsanalyzer.R
-import dev.ujjwal.transactionalsmsanalyzer.model.SMS
+import dev.ujjwal.transactionalsmsanalyzer.model.SMSDetail
+import dev.ujjwal.transactionalsmsanalyzer.util.getAmount
+import dev.ujjwal.transactionalsmsanalyzer.util.getBeautifulDate
+import dev.ujjwal.transactionalsmsanalyzer.util.getCreditStatus
 import dev.ujjwal.transactionalsmsanalyzer.view.adapter.SmsListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         private const val MY_PERMISSIONS_REQUEST_READ_SMS = 1
     }
 
-    private val smsList = ArrayList<SMS>()
+    private val smsList = ArrayList<SMSDetail>()
     private val smsListAdapter = SmsListAdapter(this, arrayListOf())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,14 +72,32 @@ class MainActivity : AppCompatActivity() {
     private fun refreshSmsInbox() {
         val contentResolver = contentResolver
         val smsInboxCursor: Cursor? = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null)
-        val indexBody: Int = smsInboxCursor!!.getColumnIndex("body")
+        val indexId: Int = smsInboxCursor!!.getColumnIndex("_id")
+        val indexDate: Int = smsInboxCursor.getColumnIndex("date")
+        val indexBody: Int = smsInboxCursor.getColumnIndex("body")
         val indexAddress: Int = smsInboxCursor.getColumnIndex("address")
         if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return
         smsList.clear()
         do {
+            val id = smsInboxCursor.getString(indexId).trimIndent()
+            val date = smsInboxCursor.getString(indexDate).trimIndent()
             val sender = smsInboxCursor.getString(indexAddress).trimIndent()
-            val text = smsInboxCursor.getString(indexBody).trimIndent()
-            smsList.add(SMS(sender + "\n\n" + text))
+            val body = smsInboxCursor.getString(indexBody).trimIndent()
+
+            val isValidTransaction = body.contains("credited") || body.contains("received") || body.contains("debited") || body.contains("withdrawn")
+            val regEx = Pattern.compile("(?i)(?:(?:RS|INR|MRP)\\.?\\s?)(\\d+(:?\\,\\d+)?(\\,\\d+)?(\\.\\d{1,2})?)")
+            val m = regEx.matcher(body)
+            if (isValidTransaction && m.find()) {
+                val smsDetail = SMSDetail()
+                smsDetail._id = id
+                smsDetail.date = date
+                smsDetail.sender = sender
+                smsDetail.body = body
+                smsDetail.isCredited = getCreditStatus(body)
+                smsDetail.beautifulDate = getBeautifulDate(date)
+                smsDetail.amount = getAmount(m.group(0)!!)
+                smsList.add(smsDetail)
+            }
         } while (smsInboxCursor.moveToNext())
         smsListAdapter.updateSms(smsList)
     }
