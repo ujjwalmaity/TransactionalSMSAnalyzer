@@ -46,6 +46,7 @@ class SmsListAdapter(private val context: Context, private var smses: ArrayList<
             tvSmsTime.text = "\n${Date(sms.date!!.toLong())}"
             if (sms.isCredited!!) {
                 tvSmsAmount.text = "+${sms.amount}"
+                tvSmsAmount.setTextColor(Color.GREEN)
             } else {
                 tvSmsAmount.text = "-${sms.amount}"
                 tvSmsAmount.setTextColor(Color.RED)
